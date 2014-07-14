@@ -6,7 +6,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     meta: {
-      version: '0.1.0'
+      version: '0.1.1'
     },
 
     concat: {
@@ -17,7 +17,19 @@ module.exports = function(grunt) {
         stripBanners: false
       },
       scripts: {
-        src: ['src/obj-io.jsx'],
+
+        src: [
+        'src/objio/lic-info.jsx',
+        'src/objio/versionhistory.jsx',
+        'src/objio/globals.jsx',
+        'src/objio/versioncheck.jsx',
+        'src/objio/util.jsx',
+        'src/objio/OBJLoader.jsx',
+        'src/objio/importer.jsx',
+        'src/objio/exporter.jsx',
+        'src/objio/ui.jsx',
+        'src/objio/main.jsx'
+        ],
         dest: 'src/tmp/<%= pkg.name %>.concat.<%= pkg.version %>.jsx'
       }
     },
@@ -36,17 +48,17 @@ module.exports = function(grunt) {
         src: ['src/tmp/<%= pkg.name %>.concat.<%= pkg.version %>.jsx'],
         dest: 'src/tmp/<%= pkg.name %>.concat.wrap.<%= pkg.version %>.jsx',
         options: {
-          wrapper: ['//before\n', '\n//after']
+          wrapper: ['(function(thisObj) {', '})(this);\n']
         },
       },
     },
     watch: {
-      files: ['src/*.jsx', 'src/*.js', 'src/lib/*'],
+      files: ['src/objio/*.jsx', 'src/objio/*.js', 'src/lib/*'],
       tasks: ['concat:scripts', 'wrap:script','copy:script']
     }
 
   });
-
+grunt.registerTask('build', ['concat:scripts', 'wrap:script','copy:script']);
   grunt.registerTask('default', ['watch']);
 
 };
